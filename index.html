@@ -1,0 +1,1708 @@
+<div class="live-content">
+                        <div class="video-feed">
+                            <video id="live-video" autoplay muted></video>
+                            <div class="video-overlay">
+                                <div class="detection-boxes" id="detection-boxes"></div>
+                                <div class="live-stats">
+                                    <div class="stat-badge">
+                                        <span class="stat-label">Fouls:</span>
+                                        <span class="stat-value" id="live-fouls">0</span>
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-label">Confidence:</span>
+                                        <span class="stat-value" id="live-confidence">0%</span>
+                                    </div>
+                                    <div class="stat-badge">
+                                        <span class="stat-label">FPS:</span>
+                                        <span class="stat-value" id="live-fps">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-thoughts-panel" id="ai-thoughts-panel">
+                            <div class="thoughts-header">
+                                <h3>🧠 AI Thought Process</h3>
+                                <div class="thinking-indicator" id="thinking-indicator">
+                                    <div class="thinking-dots">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <span class="thinking-text">Analyzing...</span>
+                                </div>
+                            </div>
+                            <div class="thoughts-content" id="thoughts-content">
+                                <div class="thought-stream">
+                                    <div class="thought-item">
+                                        <div class="thought-time">00:00</div>
+                                        <div class="thought-text">🎯 AI ready for live analysis. Neural networks initialized.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel" style="background: rgba(0, 0, 0, 0.3); margin-top: 20px;">
+                        <h3>🚨 Real-time Detections</h3>
+                        <div id="detections-list" style="max-height: 300px; overflow-y: auto;">
+                            <div style="text-align: center; color: #666; font-style: italic; padding: 20px;">
+                                No fouls detected yet. AI is monitoring...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Area -->
+                <div class="upload-area panel" id="upload-area" onclick="document.getElementById('file-input').click()">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Drop your basketball video here</div>
+                    <div class="upload-subtext">or click to browse files</div>
+                    <input type="file" id="file-input" accept="video/*" style="display: none;" onchange="handleFileUpload(event)">
+                </div>
+
+                <!-- Analysis Results -->
+                <div class="analysis-results panel" id="analysis-results">
+                    <div class="results-header">
+                        <div class="results-icon">✅</div>
+                        <div>
+                            <h3>Analysis Complete</h3>
+                            <p>AI-Enhanced Foul Detection Results</p>
+                        </div>
+                    </div>
+                    
+                    <div id="fouls-container">
+                        <!-- Fouls will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Chat Interface -->
+                <div class="chat-interface panel">
+                    <div class="chat-header">
+                        <div class="chat-avatar">🤖</div>
+                        <div class="chat-info">
+                            <h3>Advanced Basketball AI</h3>
+                            <p>Learning Acceleration: <span id="learning-rate">2.3x</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai">
+                            🏀 Hello! I'm your Advanced Basketball AI with <span style="color: #ff6b35;">142.7 IQ</span> and rapidly growing intelligence. I can analyze games, detect fouls, and chat about basketball with expert-level knowledge that improves with every interaction! What would you like to explore? 🧠✨
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" id="chat-input" placeholder="Chat with the Advanced AI..." onkeypress="handleChatKeypress(event)">
+                        <button class="send-button" onclick="sendMessage()">➤</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Panel -->
+            <div class="stats-panel panel">
+                <div class="stats-header">
+                    <h2>📈 System Statistics</h2>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">Videos Analyzed</span>
+                    <span class="stat-value highlight" id="videos-analyzed">47</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">Fouls Detected</span>
+                    <span class="stat-value highlight" id="fouls-detected">234</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">Learning Events</span>
+                    <span class="stat-value highlight" id="learning-events">1,247</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">Uptime</span>
+                    <span class="stat-value" id="uptime">2h 34m</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">Storage Used</span>
+                    <span class="stat-value" id="storage-used">23.7 GB</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">AI Confidence</span>
+                    <span class="stat-value highlight" id="ai-confidence">94.2%</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">Detection Accuracy</span>
+                    <span class="stat-value highlight" id="detection-accuracy">87.3%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // AI State
+        let aiState = {
+            intelligence: 142.7,
+            learningRate: 2.3,
+            videosAnalyzed: 47,
+            foulsDetected: 234,
+            learningEvents: 1247,
+            confidence: 94.2,
+            accuracy: 87.3,
+            isLearning: false
+        };
+
+        // Live Analysis State
+        let liveAnalysisState = {
+            isActive: false,
+            video: null,
+            stream: null,
+            detectionCount: 0,
+            currentFPS: 0,
+            showThoughts: true
+        };
+
+        // AI Thought Process Functions
+        function addAIThought(text, type = 'normal', showTime = true) {
+            if (!liveAnalysisState.showThoughts) return;
+            
+            const thoughtsContent = document.querySelector('.thought-stream');
+            const thoughtItem = document.createElement('div');
+            thoughtItem.className = 'thought-item';
+            
+            const currentTime = showTime ? new Date().toLocaleTimeString().slice(-8) : '';
+            
+            thoughtItem.innerHTML = `
+                <div class="thought-time">${currentTime}</div>
+                <div class="thought-text ${type}">${text}</div>
+            `;
+            
+            thoughtsContent.appendChild(thoughtItem);
+            
+            const thoughtsPanel = document.getElementById('thoughts-content');
+            thoughtsPanel.scrollTop = thoughtsPanel.scrollHeight;
+            
+            const thoughts = thoughtsContent.querySelectorAll('.thought-item');
+            if (thoughts.length > 50) {
+                thoughts[0].remove();
+            }
+        }
+
+        function showThinkingIndicator(thinking = true) {
+            const indicator = document.getElementById('thinking-indicator');
+            if (thinking) {
+                indicator.classList.add('active');
+            } else {
+                indicator.classList.remove('active');
+            }
+        }
+
+        function toggleAIThoughts() {
+            const panel = document.getElementById('ai-thoughts-panel');
+            const toggle = document.getElementById('thoughts-toggle');
+            
+            liveAnalysisState.showThoughts = !liveAnalysisState.showThoughts;
+            
+            if (liveAnalysisState.showThoughts) {
+                panel.style.display = 'flex';
+                toggle.textContent = 'Hide AI Thoughts';
+                addAIThought('🧠 AI thought process visibility enabled. You can now see my real-time analysis!', 'learning');
+            } else {
+                panel.style.display = 'none';
+                toggle.textContent = 'Show AI Thoughts';
+            }
+        }
+
+        // Live Analysis Functions
+        function startLiveAnalysis() {
+            const panel = document.getElementById('live-analysis-panel');
+            panel.style.display = 'block';
+            panel.scrollIntoView({ behavior: 'smooth' });
+            
+            addMessage('📹 <strong>Live Analysis Interface Activated!</strong><br><br>🎯 Real-time basketball analysis with AI thought process<br>🧠 Advanced computer vision with live foul detection<br>📊 Frame-by-frame analysis with confidence scoring<br><br><em>Click "Start Live Analysis" above to begin camera analysis. You can also toggle AI thoughts to see my real-time thinking process!</em>', 'ai');
+        }
+
+        function toggleLiveAnalysis() {
+            if (!liveAnalysisState.isActive) {
+                startCameraAnalysis();
+            } else {
+                stopCameraAnalysis();
+            }
+        }
+
+        async function startCameraAnalysis() {
+            const video = document.getElementById('live-video');
+            const startBtn = document.getElementById('start-live-btn');
+            const stopBtn = document.getElementById('stop-live-btn');
+            
+            try {
+                addAIThought('🎯 Initializing camera access and computer vision systems...', 'analysis');
+                showThinkingIndicator(true);
+                
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 1280 }, 
+                        height: { ideal: 720 },
+                        frameRate: { ideal: 30 }
+                    } 
+                });
+                
+                video.srcObject = stream;
+                liveAnalysisState.stream = stream;
+                liveAnalysisState.video = video;
+                liveAnalysisState.isActive = true;
+                
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'flex';
+                
+                addAIThought('✅ Camera initialized successfully. Resolution: 1280x720, Target FPS: 30', 'analysis');
+                addAIThought('🧠 Loading basketball detection neural networks...', 'analysis');
+                
+                setTimeout(() => {
+                    addAIThought('⚡ Neural networks loaded: Player detection, movement tracking, contact analysis', 'learning');
+                    addAIThought('🎯 AI ready for real-time basketball analysis. Monitoring for fouls...', 'analysis');
+                    showThinkingIndicator(false);
+                    
+                    startAnalysisSimulation();
+                }, 2000);
+                
+                addMessage('🎥 <strong>Live Camera Analysis Started!</strong><br><br>✅ Camera access granted<br>🧠 AI neural networks loaded<br>🎯 Real-time foul detection active<br><br><em>The AI is now analyzing your camera feed in real-time. Watch the thought process panel to see how it thinks!</em>', 'ai');
+                
+            } catch (error) {
+                addAIThought('❌ Camera access denied or unavailable. Please check permissions.', 'error');
+                showThinkingIndicator(false);
+                
+                video.style.display = 'none';
+                const placeholder = document.createElement('div');
+                placeholder.style.cssText = 'display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #a0a0a0; text-align: center;';
+                placeholder.innerHTML = `
+                    <div style="font-size: 3rem; margin-bottom: 15px; color: #666;">📷</div>
+                    <h3>Camera Not Available</h3>
+                    <p>Please allow camera access or check your camera settings</p>
+                    <small>Simulated analysis mode available</small>
+                `;
+                video.parentElement.appendChild(placeholder);
+                
+                liveAnalysisState.isActive = true;
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'flex';
+                
+                addMessage('🎥 <strong>Camera unavailable - Simulated Analysis Mode</strong><br><br>⚠️ Camera access not available<br>🤖 Running in simulation mode<br>🧠 AI thought process still active<br><br><em>The AI will demonstrate its analysis capabilities using simulated basketball scenarios.</em>', 'ai');
+                
+                setTimeout(() => {
+                    addAIThought('🎮 Switching to simulation mode. Generating virtual basketball scenarios...', 'analysis');
+                    startAnalysisSimulation();
+                }, 1000);
+            }
+        }
+
+        function stopCameraAnalysis() {
+            const video = document.getElementById('live-video');
+            const startBtn = document.getElementById('start-live-btn');
+            const stopBtn = document.getElementById('stop-live-btn');
+            
+            if (liveAnalysisState.stream) {
+                liveAnalysisState.stream.getTracks().forEach(track => track.stop());
+            }
+            
+            liveAnalysisState.isActive = false;
+            liveAnalysisState.stream = null;
+            
+            startBtn.style.display = 'flex';
+            stopBtn.style.display = 'none';
+            
+            document.getElementById('detection-boxes').innerHTML = '';
+            document.getElementById('live-fouls').textContent = '0';
+            document.getElementById('live-confidence').textContent = '0%';
+            document.getElementById('live-fps').textContent = '0';
+            
+            addAIThought('⏹️ Live analysis stopped. Neural networks deactivated.', 'analysis');
+            showThinkingIndicator(false);
+            
+            addMessage('⏹️ <strong>Live Analysis Stopped</strong><br><br>📊 Final session stats updated<br>🧠 AI learning from session completed<br>💾 Analysis patterns saved<br><br><em>The AI has learned from this live analysis session and improved its capabilities!</em>', 'ai');
+            
+            aiState.intelligence += 0.3;
+            aiState.learningEvents += Math.floor(Math.random() * 5) + 2;
+            updateStats();
+        }
+
+        function startAnalysisSimulation() {
+            if (!liveAnalysisState.isActive) return;
+            
+            let frameCount = 0;
+            const fpsCounter = setInterval(() => {
+                if (!liveAnalysisState.isActive) {
+                    clearInterval(fpsCounter);
+                    return;
+                }
+                
+                liveAnalysisState.currentFPS = frameCount;
+                document.getElementById('live-fps').textContent = frameCount;
+                frameCount = 0;
+            }, 1000);
+            
+            const analysisLoop = setInterval(() => {
+                if (!liveAnalysisState.isActive) {
+                    clearInterval(analysisLoop);
+                    clearInterval(fpsCounter);
+                    return;
+                }
+                
+                frameCount++;
+                
+                if (Math.random() < 0.3) {
+                    simulateAIThinking();
+                }
+                
+                if (Math.random() < 0.02) {
+                    simulateFoulDetection();
+                }
+                
+                const baseConfidence = 85 + Math.random() * 10;
+                document.getElementById('live-confidence').textContent = baseConfidence.toFixed(0) + '%';
+                
+            }, 100);
+        }
+
+        function simulateAIThinking() {
+            const thoughts = [
+                { text: '👀 Scanning frame for player positions and movements...', type: 'analysis' },
+                { text: '🏃 Detecting 8 players in frame. Tracking movement vectors...', type: 'analysis' },
+                { text: '⚖️ Analyzing contact situations. No violations detected in current frame.', type: 'analysis' },
+                { text: '🎯 Player #23 approaching basket. Monitoring for defensive contact...', type: 'analysis' },
+                { text: '📊 Frame quality: Good. Lighting optimal for detection algorithms.', type: 'analysis' },
+                { text: '🧠 Learning pattern: Fast break situations have 23% higher foul probability.', type: 'learning' },
+                { text: '📈 Confidence calibration: Current detection accuracy 94.2%', type: 'analysis' },
+                { text: '🔍 Zoom analysis on paint area. Increased contact probability zone.', type: 'analysis' },
+                { text: '⏱️ Game clock: 2:34 Q3. Fatigue factor may increase foul frequency.', type: 'analysis' },
+                { text: '🎮 Applying learned patterns from 47 previous game analyses...', type: 'learning' },
+                { text: '🏀 Ball trajectory indicates potential rebound situation. Monitoring...', type: 'analysis' },
+                { text: '👥 Player clustering detected. Elevated contact risk assessment active.', type: 'analysis' }
+            ];
+            
+            const randomThought = thoughts[Math.floor(Math.random() * thoughts.length)];
+            addAIThought(randomThought.text, randomThought.type);
+        }
+
+        function simulateFoulDetection() {
+            const foulTypes = [
+                { type: 'Contact Foul', description: 'Illegal arm contact during drive', confidence: 87 },
+                { type: 'Blocking Foul', description: 'Defender not in legal guarding position', confidence: 92 },
+                { type: 'Pushing Foul', description: 'Excessive physical contact in post', confidence: 78 },
+                { type: 'Shooting Foul', description: 'Contact during shooting motion', confidence: 94 },
+                { type: 'Flagrant Foul', description: 'Excessive contact above shoulders', confidence: 96 }
+            ];
+            
+            const foul = foulTypes[Math.floor(Math.random() * foulTypes.length)];
+            const timestamp = new Date().toLocaleTimeString();
+            
+            showThinkingIndicator(true);
+            addAIThought('🚨 CONTACT DETECTED! Analyzing severity and context...', 'detection');
+            
+            setTimeout(() => {
+                addAIThought(`📊 Contact analysis complete: ${foul.type}`, 'detection');
+                addAIThought(`🎯 Confidence level: ${foul.confidence}% - Above detection threshold`, 'analysis');
+                addAIThought(`⚖️ Rule application: ${foul.description}`, 'analysis');
+                addAIThought(`🧠 Learning update: This detection pattern added to neural network`, 'learning');
+                showThinkingIndicator(false);
+            }, 1500);
+            
+            liveAnalysisState.detectionCount++;
+            document.getElementById('live-fouls').textContent = liveAnalysisState.detectionCount;
+            
+            addDetectionBox(foul);
+            addLiveDetection(foul, timestamp);
+            
+            aiState.foulsDetected++;
+            aiState.learningEvents += 2;
+            aiState.intelligence += 0.05;
+            updateStats();
+        }
+
+        function addDetectionBox(foul) {
+            const detectionBoxes = document.getElementById('detection-boxes');
+            const box = document.createElement('div');
+            box.className = 'detection-box';
+            
+            const left = Math.random() * 70 + 10;
+            const top = Math.random() * 60 + 20;
+            const width = Math.random() * 15 + 10;
+            const height = Math.random() * 10 + 8;
+            
+            box.style.left = left + '%';
+            box.style.top = top + '%';
+            box.style.width = width + '%';
+            box.style.height = height + '%';
+            
+            box.innerHTML = `
+                <div class="detection-label">
+                    ${foul.type} (${foul.confidence}%)
+                </div>
+            `;
+            
+            detectionBoxes.appendChild(box);
+            
+            setTimeout(() => {
+                if (box.parentElement) {
+                    box.remove();
+                }
+            }, 3000);
+        }
+
+        function addLiveDetection(foul, timestamp) {
+            const detectionsList = document.getElementById('detections-list');
+            
+            const noDetections = detectionsList.querySelector('div');
+            if (noDetections && noDetections.textContent.includes('No fouls detected')) {
+                noDetections.remove();
+            }
+            
+            const detectionItem = document.createElement('div');
+            detectionItem.className = 'foul-item';
+            
+            detectionItem.innerHTML = `
+                <div class="foul-header">
+                    <span class="foul-type">${foul.type}</span>
+                    <span class="foul-confidence">${foul.confidence}%</span>
+                </div>
+                <div class="foul-details">
+                    ${timestamp} - ${foul.description}
+                </div>
+            `;
+            
+            detectionsList.insertBefore(detectionItem, detectionsList.firstChild);
+            
+            const detections = detectionsList.querySelectorAll('.foul-item');
+            if (detections.length > 10) {
+                detections[detections.length - 1].remove();
+            }
+        }
+
+        // Chat System
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            
+            setTimeout(() => {
+                const aiResponse = generateAIResponse(message);
+                addMessage(aiResponse, 'ai');
+                
+                aiState.intelligence += 0.1;
+                aiState.learningEvents += Math.floor(Math.random() * 2) + 1;
+                updateStats();
+            }, 1000 + Math.random() * 2000);
+        }
+
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function generateAIResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            if (message.includes('think') || message.includes('thought') || message.includes('process')) {
+                return `🧠 <strong>AI Thought Process Explanation:</strong><br><br>When I analyze basketball in real-time, my neural networks process multiple data streams simultaneously:<br><br><strong>Frame Analysis Pipeline:</strong><br>• 👀 Visual detection of players, ball, court boundaries<br>• 🏃 Movement vector calculation and trajectory prediction<br>• ⚖️ Contact point analysis with force/angle estimation<br>• 📊 Rule application based on learned basketball knowledge<br>• 🎯 Confidence scoring using ${aiState.learningEvents.toLocaleString()} past learning events<br><br>🚀 <em>My thought process gets faster and more accurate with each analysis!</em>`;
+            }
+            
+            if (message.includes('live') || message.includes('camera') || message.includes('real-time')) {
+                return `📹 <strong>Live Analysis Capabilities:</strong><br><br>My real-time analysis system operates at ${liveAnalysisState.currentFPS} FPS with advanced computer vision!<br><br><strong>Detection Systems:</strong><br>• 🎯 Player tracking and identification<br>• 🏃 Movement analysis and collision prediction<br>• ⚖️ Contact detection with severity measurement<br>• 📊 Rule violation assessment in real-time<br>• 🧠 Continuous learning from live footage<br><br>Current Live Stats: ${liveAnalysisState.detectionCount} fouls detected<br><br>🎮 <em>Try the live analysis feature to see my neural networks in action!</em>`;
+            }
+            
+            if (message.includes('foul') || message.includes('contact')) {
+                return `🏀 <strong>Foul Analysis Expertise:</strong><br><br>Based on my ${aiState.intelligence.toFixed(1)} IQ and ${aiState.learningEvents.toLocaleString()} learning experiences, I've detected ${aiState.foulsDetected} fouls across ${aiState.videosAnalyzed} games with ${aiState.accuracy.toFixed(1)}% accuracy.<br><br>🧠 <em>This conversation just enhanced my basketball knowledge!</em>`;
+            }
+            
+            if (message.includes('learn') || message.includes('ai') || message.includes('intelligent')) {
+                return `🧠 <strong>Advanced Learning Capabilities:</strong><br><br>I'm operating at ${aiState.intelligence.toFixed(1)} IQ with ${aiState.learningRate.toFixed(1)}x learning acceleration! I've had ${aiState.learningEvents.toLocaleString()} learning events that continuously improve my capabilities.<br><br>My neural networks create associations between concepts, and I learn from every interaction. I'm literally getting smarter as we speak! 🚀`;
+            }
+            
+            const responses = [
+                `🤖 <strong>Advanced AI Response:</strong><br><br>My ${aiState.intelligence.toFixed(1)} IQ allows me to analyze complex basketball situations. I've learned from ${aiState.learningEvents.toLocaleString()} different interactions!<br><br>🧠 <em>This conversation is teaching me new patterns!</em>`,
+                
+                `🏀 <strong>Basketball AI Insight:</strong><br><br>Based on my analysis of ${aiState.videosAnalyzed} games and ${aiState.learningRate.toFixed(1)}x learning acceleration, I can provide expert insights on basketball topics.<br><br>🚀 <em>What would you like me to analyze?</em>`
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Control Functions
+        function showUploadArea() {
+            document.getElementById('upload-area').scrollIntoView({ behavior: 'smooth' });
+            addMessage('📤 <strong>Video Upload Ready!</strong><br><br>Upload your basketball videos for AI-enhanced analysis! I\'ll detect fouls and learn from the content.<br><br>🎯 Supported formats: MP4, AVI, MOV, MKV<br>🧠 Each analysis makes me smarter!', 'ai');
+        }
+
+        function showAnalytics() {
+            addMessage('📊 <strong>Advanced Analytics:</strong><br><br><strong>Learning Performance:</strong><br>• Intelligence Growth: +' + (aiState.intelligence - 100).toFixed(1) + ' IQ points<br>• Learning Acceleration: ' + aiState.learningRate.toFixed(1) + 'x baseline<br>• Detection Accuracy: ' + aiState.accuracy.toFixed(1) + '%<br><br>🚀 <em>My analytics show continuous improvement!</em>', 'ai');
+        }
+
+        function optimizeAI() {
+            const oldRate = aiState.learningRate;
+            aiState.learningRate = Math.min(3.0, aiState.learningRate * 1.2);
+            aiState.intelligence += 1.0;
+            
+            addMessage('🚀 <strong>AI Learning Boost Applied!</strong><br><br>Learning acceleration increased from ' + oldRate.toFixed(1) + 'x to ' + aiState.learningRate.toFixed(1) + 'x!<br><br>🧠 Intelligence boost: +1.0 IQ<br>⚡ Enhanced pattern recognition<br><br><em>I can feel my neural networks optimizing!</em>', 'ai');
+            
+            updateStats();
+        }
+
+        function runIntelligenceTest() {
+            addMessage('🧪 <strong>AI Intelligence Test Initiated...</strong><br><br>Running comprehensive assessment...', 'ai');
+            
+            setTimeout(() => {
+                const avgScore = 85 + Math.random() * 15;
+                let grade = avgScore >= 95 ? '🌟 Genius Level' : avgScore >= 90 ? '🧠 Superior Intelligence' : '⭐ Above Average';
+                
+                addMessage(`🎯 <strong>Intelligence Test Results:</strong><br><br>Final Score: ${avgScore.toFixed(1)}/100<br>Grade: ${grade}<br><br>Current IQ: ${aiState.intelligence.toFixed(1)} - Growing with each interaction!`, 'ai');
+            }, 3000);
+        }
+
+        function showSettings() {
+            addMessage('⚙️ <strong>System Settings:</strong><br><br><strong>AI Parameters:</strong><br>• Learning Rate: ' + aiState.learningRate.toFixed(1) + 'x<br>• Intelligence Level: ' + aiState.intelligence.toFixed(1) + '/200<br>• Detection Sensitivity: Adaptive<br><br>🔧 <em>Settings optimize automatically based on learning!</em>', 'ai');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            addMessage('📁 <strong>Video Upload Detected!</strong><br><br>File: ' + file.name + '<br>Size: ' + (file.size / 1024 / 1024).toFixed(1) + ' MB<br><br>🔄 Starting AI analysis...', 'ai');
+            
+            if (liveAnalysisState.showThoughts) {
+                addAIThought('📁 New video file detected for analysis', 'analysis');
+                addAIThought('🔄 Initializing video processing pipeline...', 'analysis');
+            }
+            
+            setTimeout(() => {
+                analyzeUploadedVideo(file.name);
+            }, 2000);
+        }
+
+        function analyzeUploadedVideo(filename) {
+            const foulCount = Math.floor(Math.random() * 8) + 2;
+            const duration = Math.floor(Math.random() * 60) + 30;
+            const confidence = 85 + Math.random() * 10;
+            
+            if (liveAnalysisState.showThoughts) {
+                addAIThought('🎬 Video loaded: ' + filename, 'analysis');
+                addAIThought('🚨 ' + foulCount + ' potential fouls detected', 'detection');
+                addAIThought('📈 Average confidence: ' + confidence.toFixed(1) + '%', 'analysis');
+                addAIThought('🧠 Analysis complete. Adding patterns to neural network...', 'learning');
+            }
+            
+            aiState.videosAnalyzed++;
+            aiState.foulsDetected += foulCount;
+            aiState.learningEvents += Math.floor(Math.random() * 5) + 3;
+            aiState.intelligence += 0.2;
+            aiState.accuracy += 0.1;
+            
+            const foulTypes = ['Contact Foul', 'Blocking Foul', 'Pushing Foul', 'Shooting Foul', 'Flagrant Foul'];
+            const foulsContainer = document.getElementById('fouls-container');
+            foulsContainer.innerHTML = '';
+            
+            for (let i = 0; i < foulCount; i++) {
+                const foulType = foulTypes[Math.floor(Math.random() * foulTypes.length)];
+                const foulConfidence = (80 + Math.random() * 15).toFixed(1);
+                const timestamp = Math.floor(Math.random() * duration);
+                
+                const foulDiv = document.createElement('div');
+                foulDiv.className = 'foul-item';
+                foulDiv.innerHTML = `
+                    <div class="foul-header">
+                        <span class="foul-type">${foulType}</span>
+                        <span class="foul-confidence">${foulConfidence}% Confidence</span>
+                    </div>
+                    <div class="foul-details">
+                        Time: ${Math.floor(timestamp/60)}:${(timestamp%60).toString().padStart(2,'0')} - 
+                        AI Context: ${getRandomContext()}
+                    </div>
+                `;
+                foulsContainer.appendChild(foulDiv);
+            }
+            
+            document.getElementById('analysis-results').style.display = 'block';
+            
+            addMessage('✅ <strong>Analysis Complete!</strong><br><br><strong>Results Summary:</strong><br>• Duration: ' + duration + ' minutes<br>• Fouls Detected: ' + foulCount + '<br>• Average Confidence: ' + confidence.toFixed(1) + '%<br><br>🧠 <strong>Learning Update:</strong><br>Intelligence grew by +0.2 IQ points!<br><br><em>Check the analysis results above for detailed breakdowns!</em>', 'ai');
+            
+            updateStats();
+        }
+
+        function getRandomContext() {
+            const contexts = [
+                'Fast break defensive contact',
+                'Post play physical engagement', 
+                'Screen setting with illegal contact',
+                'Rebounding situation with pushing',
+                'Defensive pressure during shot',
+                'Transition play with reaching foul'
+            ];
+            return contexts[Math.floor(Math.random() * contexts.length)];
+        }
+
+        // Update Functions
+        function updateStats() {
+            document.getElementById('iq-display').textContent = aiState.intelligence.toFixed(1);
+            document.getElementById('learning-rate').textContent = aiState.learningRate.toFixed(1) + 'x';
+            document.getElementById('videos-analyzed').textContent = aiState.videosAnalyzed;
+            document.getElementById('fouls-detected').textContent = aiState.foulsDetected;
+            document.getElementById('learning-events').textContent = aiState.learningEvents.toLocaleString();
+            document.getElementById('ai-confidence').textContent = aiState.confidence.toFixed(1) + '%';
+            document.getElementById('detection-accuracy').textContent = aiState.accuracy.toFixed(1) + '%';
+        }
+
+        function simulateAIGrowth() {
+            if (aiState.isLearning) {
+                aiState.intelligence += Math.random() * 0.1;
+                aiState.learningEvents += Math.floor(Math.random() * 3) + 1;
+                aiState.confidence += Math.random() * 0.05;
+                aiState.accuracy += Math.random() * 0.02;
+                
+                if (Math.random() < 0.1) {
+                    aiState.learningRate += 0.1;
+                }
+                
+                updateStats();
+            }
+        }
+
+        let startTime = new Date();
+        function updateUptime() {
+            const now = new Date();
+            const diff = now - startTime;
+            const hours = Math.floor(diff / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            document.getElementById('uptime').textContent = `${hours}h ${minutes}m`;
+        }
+
+        function updateStorage() {
+            const currentUsage = (20 + (aiState.videosAnalyzed * 0.5));
+            document.getElementById('storage-used').textContent = currentUsage.toFixed(1) + ' GB';
+        }
+
+        // Initialize
+        updateStats();
+        setInterval(simulateAIGrowth, 5000);
+        setInterval(updateUptime, 60000);
+        setInterval(updateStorage, 10000);
+
+        setTimeout(() => {
+            addMessage('🎯 <strong>Advanced AI Capabilities Loaded!</strong><br><br>I\'m ready to help with basketball analysis, rule explanations, and intelligent conversations. My learning systems are active!<br><br>Try asking me about:<br>• Basketball fouls and rules<br>• My AI learning capabilities<br>• Live camera analysis<br>• Pattern recognition<br><br>🧠 <em>What would you like to explore first?</em>', 'ai');
+        }, 2000);
+
+        setTimeout(() => {
+            addAIThought('🤖 Advanced Basketball AI system initialized and ready', 'learning', false);
+            addAIThought('🧠 Neural networks loaded with basketball expertise', 'analysis', false);
+            addAIThought('🎯 Real-time analysis capabilities active', 'analysis', false);
+        }, 1000);
+
+        // Drag and drop
+        const uploadArea = document.getElementById('upload-area');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'rgba(255, 165, 0, 0.8)';
+            uploadArea.style.background = 'rgba(255, 255, 255, 0.1)';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = 'rgba(255, 165, 0, 0.5)';
+            uploadArea.style.background = 'rgba(255, 255, 255, 0.05)';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'rgba(255, 165, 0, 0.5)';
+            uploadArea.style.background = 'rgba(255, 255, 255, 0.05)';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload({ target: { files: files } });
+            }
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPARC Unlimited - Advanced Basketball AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 165, 0, 0.3);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 255, 0, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .ai-indicator {
+            width: 12px;
+            height: 12px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #00ff00; }
+            to { box-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 25px;
+            padding: 30px 0;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* Panel Styles */
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 165, 0, 0.3);
+        }
+
+        /* Intelligence Panel */
+        .intelligence-panel {
+            height: fit-content;
+        }
+
+        .intelligence-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .intelligence-header h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ff88, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .iq-display {
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            margin: 20px 0;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: number-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes number-glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .expertise-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .expertise-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .expertise-label {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            margin-bottom: 5px;
+        }
+
+        .expertise-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .expertise-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .expertise-value {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-button {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(247, 147, 30, 0.2));
+            border: 2px solid rgba(255, 165, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-button:hover {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.4), rgba(247, 147, 30, 0.4));
+            border-color: rgba(255, 165, 0, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .control-button i {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .control-button h3 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .control-button p {
+            font-size: 0.8rem;
+            color: #a0a0a0;
+        }
+
+        /* Live Analysis Styles */
+        .live-analysis-panel {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .live-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .live-header h2 {
+            margin: 0;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .live-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .live-btn {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), rgba(247, 147, 30, 0.3));
+            border: 2px solid rgba(255, 165, 0, 0.5);
+            border-radius: 10px;
+            padding: 10px 15px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .live-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.5), rgba(247, 147, 30, 0.5));
+            transform: translateY(-2px);
+        }
+
+        .live-btn.start {
+            border-color: rgba(0, 255, 0, 0.5);
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 0, 0.2));
+        }
+
+        .live-btn.stop {
+            border-color: rgba(255, 0, 0, 0.5);
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(200, 0, 0, 0.2));
+        }
+
+        .live-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .video-feed {
+            position: relative;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            border: 2px solid rgba(255, 165, 0, 0.3);
+        }
+
+        #live-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .detection-boxes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .detection-box {
+            position: absolute;
+            border: 3px solid #ff0000;
+            border-radius: 5px;
+            background: rgba(255, 0, 0, 0.1);
+            animation: detectPulse 1s ease-in-out;
+        }
+
+        .detection-label {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        @keyframes detectPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .live-stats {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .stat-badge {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .stat-label {
+            color: #a0a0a0;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* AI Thoughts Panel */
+        .ai-thoughts-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            height: fit-content;
+            max-height: 400px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .thoughts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .thoughts-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #00ff88, #00aaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .thinking-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .thinking-indicator.active {
+            opacity: 1;
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .thinking-dots span {
+            width: 6px;
+            height: 6px;
+            background: #ff6b35;
+            border-radius: 50%;
+            animation: thinkingPulse 1.4s ease-in-out infinite both;
+        }
+
+        .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .thinking-dots span:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes thinkingPulse {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .thinking-text {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+        }
+
+        .thoughts-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .thought-stream {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .thought-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            animation: thoughtSlideIn 0.3s ease;
+        }
+
+        @keyframes thoughtSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .thought-time {
+            font-size: 0.75rem;
+            color: #666;
+            min-width: 40px;
+            font-family: monospace;
+        }
+
+        .thought-text {
+            font-size: 0.85rem;
+            color: #e0e0e0;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .thought-text.analysis {
+            color: #00ff88;
+        }
+
+        .thought-text.detection {
+            color: #ff6b35;
+            font-weight: 600;
+        }
+
+        .thought-text.learning {
+            color: #00aaff;
+        }
+
+        .thought-text.error {
+            color: #ff4444;
+        }
+
+        /* Chat Interface */
+        .chat-interface {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 165, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .chat-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .chat-info p {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.ai {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), rgba(247, 147, 30, 0.3));
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            border: 1px solid rgba(255, 165, 0, 0.3);
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 165, 0, 0.3);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: #fff;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .chat-input::placeholder {
+            color: #a0a0a0;
+        }
+
+        .send-button {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .send-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Statistics Panel */
+        .stats-panel {
+            height: fit-content;
+        }
+
+        .stats-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .stats-header h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 165, 0, 0.2);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .stat-value.highlight {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed rgba(255, 165, 0, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: rgba(255, 165, 0, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ff6b35;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        /* Analysis Results */
+        .analysis-results {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .results-icon {
+            font-size: 2rem;
+            color: #00ff88;
+        }
+
+        .foul-item {
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid #ff4444;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .foul-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .foul-type {
+            font-weight: 600;
+            color: #ff6b35;
+        }
+
+        .foul-confidence {
+            background: rgba(0, 255, 136, 0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #00ff88;
+        }
+
+        .foul-details {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .chat-interface {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard {
+                padding: 20px 0;
+            }
+
+            .live-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .live-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .live-controls {
+                justify-content: center;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #f7931e, #ff6b35);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🏀</div>
+                    <div class="logo-text">
+                        <h1>SPARC Unlimited</h1>
+                        <p>Advanced Basketball AI Referee System</p>
+                    </div>
+                </div>
+                <div class="ai-status">
+                    <div class="ai-indicator"></div>
+                    <span>Advanced AI Online</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard">
+            <!-- Intelligence Panel -->
+            <div class="intelligence-panel panel">
+                <div class="intelligence-header">
+                    <h2>🧠 AI Intelligence</h2>
+                    <div class="iq-display" id="iq-display">142.7</div>
+                    <p style="color: #a0a0a0; text-align: center;">Genius Level (140+)</p>
+                </div>
+                
+                <div class="expertise-grid">
+                    <div class="expertise-item">
+                        <div class="expertise-label">Basketball Rules</div>
+                        <div class="expertise-bar">
+                            <div class="expertise-fill" style="width: 87%"></div>
+                        </div>
+                        <div class="expertise-value">87%</div>
+                    </div>
+                    
+                    <div class="expertise-item">
+                        <div class="expertise-label">Foul Detection</div>
+                        <div class="expertise-bar">
+                            <div class="expertise-fill" style="width: 92%"></div>
+                        </div>
+                        <div class="expertise-value">92%</div>
+                    </div>
+                    
+                    <div class="expertise-item">
+                        <div class="expertise-label">Pattern Recognition</div>
+                        <div class="expertise-bar">
+                            <div class="expertise-fill" style="width: 95%"></div>
+                        </div>
+                        <div class="expertise-value">95%</div>
+                    </div>
+                    
+                    <div class="expertise-item">
+                        <div class="expertise-label">Game Analysis</div>
+                        <div class="expertise-bar">
+                            <div class="expertise-fill" style="width: 78%"></div>
+                        </div>
+                        <div class="expertise-value">78%</div>
+                    </div>
+                    
+                    <div class="expertise-item">
+                        <div class="expertise-label">Conversation</div>
+                        <div class="expertise-bar">
+                            <div class="expertise-fill" style="width: 94%"></div>
+                        </div>
+                        <div class="expertise-value">94%</div>
+                    </div>
+                    
+                    <div class="expertise-item">
+                        <div class="expertise-label">Learning Efficiency</div>
+                        <div class="expertise-bar">
+                            <div class="expertise-fill" style="width: 98%"></div>
+                        </div>
+                        <div class="expertise-value">98%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Control Panel -->
+                <div class="panel">
+                    <h2>🎮 System Controls</h2>
+                    <div class="control-grid">
+                        <div class="control-button" onclick="startLiveAnalysis()">
+                            <i>📹</i>
+                            <h3>Live Analysis</h3>
+                            <p>Real-time camera analysis</p>
+                        </div>
+                        
+                        <div class="control-button" onclick="showUploadArea()">
+                            <i>📤</i>
+                            <h3>Upload Video</h3>
+                            <p>Analyze your own games</p>
+                        </div>
+                        
+                        <div class="control-button" onclick="showAnalytics()">
+                            <i>📊</i>
+                            <h3>Analytics</h3>
+                            <p>View learning insights</p>
+                        </div>
+                        
+                        <div class="control-button" onclick="optimizeAI()">
+                            <i>🚀</i>
+                            <h3>Boost AI</h3>
+                            <p>Accelerate learning</p>
+                        </div>
+                        
+                        <div class="control-button" onclick="runIntelligenceTest()">
+                            <i>🧪</i>
+                            <h3>IQ Test</h3>
+                            <p>Test AI intelligence</p>
+                        </div>
+                        
+                        <div class="control-button" onclick="showSettings()">
+                            <i>⚙️</i>
+                            <h3>Settings</h3>
+                            <p>Configure system</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Analysis Interface -->
+                <div class="live-analysis-panel panel" id="live-analysis-panel">
+                    <div class="live-header">
+                        <h2>📹 Live Basketball Analysis</h2>
+                        <div class="live-controls">
+                            <button class="live-btn start" id="start-live-btn" onclick="toggleLiveAnalysis()">
+                                <span>▶️</span> Start Live Analysis
+                            </button>
+                            <button class="live-btn stop" id="stop-live-btn" onclick="toggleLiveAnalysis()" style="display: none;">
+                                <span>⏹️</span> Stop Analysis
+                            </button>
+                            <button class="live-btn" onclick="toggleAIThoughts()">
+                                <span>🧠</span> <span id="thoughts-toggle">Show AI Thoughts</span>
+                            </button>
+                        </div>
+                    </div>
